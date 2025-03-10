@@ -1,10 +1,10 @@
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true"
-})
+});
 
 const withPWA = require("next-pwa")({
   dest: "public"
-})
+});
 
 module.exports = withBundleAnalyzer(
   withPWA({
@@ -29,4 +29,17 @@ module.exports = withBundleAnalyzer(
       serverComponentsExternalPackages: ["sharp", "onnxruntime-node"]
     }
   })
-)
+);
+
+// 🔹 Correctly Placed Headers to Allow iFrame Embedding
+module.exports.headers = async () => {
+  return [
+    {
+      source: "/(.*)",
+      headers: [
+        { key: "X-Frame-Options", value: "ALLOWALL" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'self' https://your-carrd-site.com;" }
+      ]
+    }
+  ];
+};
