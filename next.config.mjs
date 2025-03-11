@@ -28,7 +28,7 @@ module.exports = withBundleAnalyzer(
     experimental: {
       serverComponentsExternalPackages: ["sharp", "onnxruntime-node"],
     },
-    // 🔹 Allow iFrame embedding for Carrd
+    // 🔹 Allow iFrame embedding & Disable Authentication
     async headers() {
       return [
         {
@@ -36,9 +36,13 @@ module.exports = withBundleAnalyzer(
           headers: [
             { key: "X-Frame-Options", value: "ALLOWALL" },
             { key: "Content-Security-Policy", value: "frame-ancestors 'self' https://psiprototype.carrd.co;" },
+            { key: "Access-Control-Allow-Origin", value: "https://psiprototype.carrd.co" },
+            { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
+            { key: "Access-Control-Allow-Headers", value: "Authorization, Content-Type" }
           ],
         },
       ];
     },
   })
 );
+
