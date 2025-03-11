@@ -31,21 +31,14 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    // 🔹 Inject Security Headers to Allow iFrame Embedding
-    const newHeaders = new Headers(request.headers)
-    newHeaders.set("X-Frame-Options", "ALLOWALL")
-    newHeaders.set("Content-Security-Policy", "frame-ancestors 'self' https://psiprototype.carrd.co;")
+    // 🔹 Explicitly Set Headers for Every Response
+    const modifiedResponse = NextResponse.next()
+    modifiedResponse.headers.set("X-Frame-Options", "ALLOWALL")
+    modifiedResponse.headers.set("Content-Security-Policy", "frame-ancestors 'self' https://psiprototype.carrd.co;")
 
-    return new NextResponse(response.body, {
-      status: response.status,
-      headers: newHeaders
-    })
+    return modifiedResponse
   } catch (e) {
-    return NextResponse.next({
-      request: {
-        headers: request.headers
-      }
-    })
+    return NextResponse.next()
   }
 }
 
