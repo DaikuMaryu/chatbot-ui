@@ -31,7 +31,15 @@ export async function middleware(request: NextRequest) {
       )
     }
 
-    return response
+    // 🔹 Inject Security Headers to Allow iFrame Embedding
+    const newHeaders = new Headers(request.headers)
+    newHeaders.set("X-Frame-Options", "ALLOWALL")
+    newHeaders.set("Content-Security-Policy", "frame-ancestors 'self' https://psiprototype.carrd.co;")
+
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: newHeaders
+    })
   } catch (e) {
     return NextResponse.next({
       request: {
@@ -44,3 +52,4 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: "/((?!api|static|.*\\..*|_next|auth).*)"
 }
+
